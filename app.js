@@ -9,6 +9,10 @@ require('dotenv').config(); // Importar variables de entorno
 
 const app = express();
 
+// Aumentar el límite del tamaño del cuerpo de la solicitud a 50mb o al tamaño necesario
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 // Middlewares de seguridad
 app.use(helmet());
 
