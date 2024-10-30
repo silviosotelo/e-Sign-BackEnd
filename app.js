@@ -1,6 +1,7 @@
 const express = require('express');
 const contractRoutes = require('./routes/contractRoutes');
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -39,6 +40,7 @@ app.use(limiter); // Aplicar limitación globalmente
 // Definir rutas
 app.use('/api/contracts', contractRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
 
 // Capturar rutas inexistentes
 app.use((req, res, next) => {

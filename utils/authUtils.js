@@ -4,7 +4,12 @@ require('dotenv').config();
 
 // Generate JWT token
 exports.generateToken = (user) => {
-    return jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    return jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '10m' });
+};
+
+// Generate Refresh Token (long-lived)
+exports.generateRefreshToken = (user) => {
+    return jwt.sign({ userId: user._id }, process.env.REFRESH_SECRET, { expiresIn: '1h' });
 };
 
 // Verify JWT token
