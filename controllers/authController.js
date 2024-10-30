@@ -17,7 +17,7 @@ exports.registerUser = [
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, password, recaptchaToken } = req.body;
+    const { name, document, email, password, role = 'user', recaptchaToken } = req.body; // role toma el valor 'user' por defecto si no está definido
 
     // Validar que la contraseña esté definida y sea de tipo cadena
     if (typeof password !== 'string') {
@@ -30,9 +30,9 @@ exports.registerUser = [
 
       // Hash de la contraseña con Argon2
       const hashedPassword = await argon2.hash(password);
-      console.log('Hashed password before saving:', hashedPassword); // Verifica el hash antes de guardarlo
 
-      user = new User({ email, password: hashedPassword });
+      // Crear el usuario con el rol recibido o 'user' si no se recibe ninguno
+      user = new User({ name, document, email, password: hashedPassword, role });
       await user.save();
 
       res.status(201).json({ message: 'User registered successfully' });

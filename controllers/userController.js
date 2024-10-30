@@ -16,8 +16,8 @@ exports.registerUser = [
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-
-    const { email, password, recaptchaToken } = req.body;
+    console.log('registerUser: ', req.body);
+    const { email, password, role = 'user', recaptchaToken } = req.body; // role toma el valor 'user' por defecto si no está definido
 
     // Validar que la contraseña esté definida y sea de tipo cadena
     if (typeof password !== 'string') {
@@ -30,9 +30,10 @@ exports.registerUser = [
 
       // Hash de la contraseña con Argon2
       const hashedPassword = await argon2.hash(password);
-      console.log('Hashed password before saving:', hashedPassword); // Verifica el hash antes de guardarlo
+      //console.log('Hashed password before saving:', hashedPassword); // Verifica el hash antes de guardarlo
 
-      user = new User({ email, password: hashedPassword });
+      // Crear el usuario con el rol recibido o 'user' si no se recibe ninguno
+      user = new User({ email, password: hashedPassword, role });
       await user.save();
 
       res.status(201).json({ message: 'User registered successfully' });
@@ -42,6 +43,7 @@ exports.registerUser = [
     }
   }
 ];
+
 
 // Login user (JWT)
 exports.loginUser = async (req, res) => {
@@ -138,7 +140,7 @@ exports.getUserData = async (req, res) => {
     }
     // Buscar todos los contratos asociados al usuario ordenados por fecha descendente
     const userData = await findUserById(userId);
-    const user = {userId: userData._id, email: userData.email, createdAt: userData.createdAt}
+    const user = {userId: userData._id, name: userData.name, document: userData.document, email: userData.email, createdAt: userData.createdAt, role: userData.role}
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
